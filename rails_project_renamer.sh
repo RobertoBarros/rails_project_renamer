@@ -5,20 +5,20 @@ if [ $# -lt 2 ]; then
     echo "Usage: $0 <repo_url> <new_app_name>"
     echo "This script clones a Rails project from the provided repository URL,"
     echo "renames it to the specified new app name, initializes a new Git repository,"
-    echo "and updates all occurrences of the original project name in various formats"
-    echo "(camelCase, snake_case, UPPER_CASE, and Human Name) to the new project name."
+    echo "and updates all occurrences of the original project name."
     exit 1
 fi
 
 # Assign arguments to variables
 REPO_URL="$1"
 NEW_NAME="$2"
+NEW_NAME_LOWER=$(echo "$NEW_NAME" | tr '[:upper:]' '[:lower:]')
 
-# Clone the repository
-git clone $REPO_URL $NEW_NAME
+# Clone the repository into a directory with the new name in lowercase
+git clone $REPO_URL $NEW_NAME_LOWER
 
 # Enter the new application directory
-cd $NEW_NAME
+cd $NEW_NAME_LOWER
 
 # Remove the existing .git directory
 rm -rf .git
