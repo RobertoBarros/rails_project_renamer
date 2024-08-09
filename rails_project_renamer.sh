@@ -30,30 +30,14 @@ git init
 OLD_NAME=$(grep "module " config/application.rb | sed -e 's/module \(.*\)/\1/' -e 's/ *$//')
 
 # Convert names to different formats
-OLD_NAME_CAMEL="$(tr '[:upper:]' '[:lower:]' <<< ${OLD_NAME:0:1})${OLD_NAME:1}"
-NEW_NAME_CAMEL="$(tr '[:upper:]' '[:lower:]' <<< ${NEW_NAME:0:1})${NEW_NAME:1}"
 OLD_NAME_SNAKE="$(echo $OLD_NAME | sed -r 's/([A-Z])/_\L\1/g' | cut -c 2-)"
 NEW_NAME_SNAKE="$(echo $NEW_NAME | sed -r 's/([A-Z])/_\L\1/g' | cut -c 2-)"
-OLD_NAME_UPPER="$(echo $OLD_NAME | tr '[:lower:]' '[:upper:]')"
-NEW_NAME_UPPER="$(echo $NEW_NAME | tr '[:lower:]' '[:upper:]')"
-OLD_NAME_HUMAN="$(echo $OLD_NAME | sed -r 's/([A-Z])/\L \1/g' | cut -c 2- | sed 's/^./\U&/')"
-NEW_NAME_HUMAN="$(echo $NEW_NAME | sed -r 's/([A-Z])/\L \1/g' | cut -c 2- | sed 's/^./\U&/')"
-
-# Specific replacement for snake_case and environment variables in critical files
-OLD_DB_PREFIX="${OLD_NAME_SNAKE}_"
-NEW_DB_PREFIX="${NEW_NAME_SNAKE}_"
-OLD_ENV_PREFIX="$(echo $OLD_NAME | tr '[:lower:]' '[:upper:]' | sed -r 's/([A-Z])/_\1/g' | cut -c 2-)_"
-NEW_ENV_PREFIX="$(echo $NEW_NAME | tr '[:lower:]' '[:upper:]' | sed -r 's/([A-Z])/_\1/g' | cut -c 2-)_"
 
 # Replace all occurrences of the old name with the new name across all project files
 find . -type f \( -name "*.rb" -o -name "*.erb" -o -name "*.yml" -o -name "*.js" -o -name "*.css" \) -exec sed -i "" \
--e "s/$OLD_NAME/$NEW_NAME/g" \
--e "s/$OLD_NAME_CAMEL/$NEW_NAME_CAMEL/g" \
--e "s/$OLD_NAME_SNAKE/$NEW_NAME_SNAKE/g" \
--e "s/$OLD_NAME_UPPER/$NEW_NAME_UPPER/g" \
--e "s/$OLD_NAME_HUMAN/$NEW_NAME_HUMAN/g" \
--e "s/$OLD_DB_PREFIX/$NEW_DB_PREFIX/g" \
--e "s/$OLD_ENV_PREFIX/$NEW_ENV_PREFIX/g" {} +
+-e "s/${OLD_NAME}/${NEW_NAME}/g" \
+-e "s/${OLD_NAME_SNAKE}/${NEW_NAME_SNAKE}/g" \
+-e "s/${OLD_NAME_SNAKE}_/${NEW_NAME_SNAKE}_/g" {} +
 
 # Add all files to the new repository and commit them
 git add .
