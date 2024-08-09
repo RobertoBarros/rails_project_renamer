@@ -39,13 +39,18 @@ NEW_NAME_UPPER="$(echo $NEW_NAME | tr '[:lower:]' '[:upper:]')"
 OLD_NAME_HUMAN="$(echo $OLD_NAME | sed -r 's/([A-Z])/\L \1/g' | cut -c 2- | sed 's/^./\U&/')"
 NEW_NAME_HUMAN="$(echo $NEW_NAME | sed -r 's/([A-Z])/\L \1/g' | cut -c 2- | sed 's/^./\U&/')"
 
+# Specific replacement for snake_case in database.yml and other relevant files
+OLD_DB_NAME="$(echo $OLD_NAME_SNAKE)_"
+NEW_DB_NAME="$(echo $NEW_NAME_SNAKE)_"
+
 # Replace all occurrences of the old name with the new name across all project files
 find . -type f \( -name "*.rb" -o -name "*.erb" -o -name "*.yml" -o -name "*.js" -o -name "*.css" \) -exec sed -i "" \
 -e "s/$OLD_NAME/$NEW_NAME/g" \
 -e "s/$OLD_NAME_CAMEL/$NEW_NAME_CAMEL/g" \
 -e "s/$OLD_NAME_SNAKE/$NEW_NAME_SNAKE/g" \
 -e "s/$OLD_NAME_UPPER/$NEW_NAME_UPPER/g" \
--e "s/$OLD_NAME_HUMAN/$NEW_NAME_HUMAN/g" {} +
+-e "s/$OLD_NAME_HUMAN/$NEW_NAME_HUMAN/g" \
+-e "s/$OLD_DB_NAME/$NEW_DB_NAME/g" {} +
 
 # Add all files to the new repository and commit them
 git add .
