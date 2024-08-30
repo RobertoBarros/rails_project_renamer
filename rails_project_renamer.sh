@@ -1,17 +1,28 @@
 #!/bin/bash
 
 # Check if all necessary arguments were provided
-if [ $# -lt 2 ]; then
-    echo "Usage: $0 <repo_url> <new_app_name>"
-    echo "This script clones a Rails project from the provided repository URL,"
-    echo "renames it to the specified new app name, initializes a new Git repository,"
-    echo "and updates all occurrences of the original project name."
-    exit 1
+# Function to prompt for input if not provided as an argument
+prompt_for_input() {
+    local prompt_message=$1
+    local input_value
+    read -p "$prompt_message" input_value
+    echo "$input_value"
+}
+
+# Check if REPO_URL argument was provided, otherwise prompt for it
+if [ -z "$1" ]; then
+    REPO_URL=$(prompt_for_input "Enter the repository URL: ")
+else
+    REPO_URL="$1"
 fi
 
-# Assign arguments to variables
-REPO_URL="$1"
-NEW_NAME="$2"
+# Check if NEW_NAME argument was provided, otherwise prompt for it
+if [ -z "$2" ]; then
+    NEW_NAME=$(prompt_for_input "Enter the new app name: ")
+else
+    NEW_NAME="$2"
+fi
+
 NEW_NAME_LOWER=$(echo "$NEW_NAME" | tr '[:upper:]' '[:lower:]')
 
 # Clone the repository into a directory with the new name in lowercase
